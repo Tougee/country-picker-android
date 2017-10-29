@@ -38,13 +38,13 @@ public class MainActivity extends AppCompatActivity {
         mCountryIsoCodeTextView.setText(code);
         mCountryDialCodeTextView.setText(dialCode);
         mCountryFlagImageView.setImageResource(flagDrawableResID);
-        mCountryPicker.dismiss();
+        getSupportFragmentManager().popBackStackImmediate();
       }
     });
     mPickCountryButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        mCountryPicker.show(getSupportFragmentManager(), "COUNTRY_PICKER");
+        show();
       }
     });
     getUserCountryInfo();
@@ -56,18 +56,25 @@ public class MainActivity extends AppCompatActivity {
     mCountryDialCodeTextView = (TextView) findViewById(R.id.selected_country_dial_code_text_view);
     mPickCountryButton = (Button) findViewById(R.id.country_picker_button);
     mCountryFlagImageView = (ImageView) findViewById(R.id.selected_country_flag_image_view);
-    mCountryPicker = CountryPicker.newInstance("Select Country");
+    mCountryPicker = CountryPicker.newInstance();
 
     // You can limit the displayed countries
-    ArrayList<Country> nc = new ArrayList<>();
-    for (Country c : Country.getAllCountries()) {
-      if (c.getDialCode().endsWith("0")) {
-        nc.add(c);
-      }
-    }
+    //ArrayList<Country> nc = new ArrayList<>();
+    //for (Country c : Country.getAllCountries()) {
+    //  if (c.getDialCode().endsWith("0")) {
+    //    nc.add(c);
+    //  }
+    //}
     // and decide, in which order they will be displayed
-    Collections.reverse(nc);
-    mCountryPicker.setCountriesList(nc);
+    //Collections.reverse(nc);
+    //mCountryPicker.setCountriesList(nc);
+    mCountryPicker.setCountriesList(Country.getAllCountries());
+  }
+
+  private void show() {
+    getSupportFragmentManager().beginTransaction()
+        .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+        .replace(R.id.root, mCountryPicker).addToBackStack(null).commit();
   }
 
   private void getUserCountryInfo() {
@@ -77,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
       mCountryDialCodeTextView.setText(country.getDialCode());
       mCountryIsoCodeTextView.setText(country.getCode());
       mCountryNameTextView.setText(country.getName());
+      mCountryPicker.setLocationCountry(country);
     }
   }
 }

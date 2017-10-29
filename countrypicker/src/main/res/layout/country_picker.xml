@@ -1,26 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical" >
+
+  <ImageView
+      android:id="@+id/close"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:padding="8dp"
+      android:src="@drawable/ic_close_black_24dp"
+      tools:ignore="ContentDescription"
+      />
+
+  <TextView
+      android:id="@+id/title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:padding="8dp"
+      android:textColor="@android:color/black"
+      android:textSize="18sp"
+      android:text="Select a Country"
+      />
+  <View
+      android:id="@+id/line1"
+      android:layout_width="match_parent"
+      android:layout_height="1px"
+      android:layout_below="@+id/close"
+      android:background="@color/bg_gray"/>
 
   <EditText
-    android:id="@+id/country_code_picker_search"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    android:drawableLeft="@drawable/ic_search"
-    android:hint="@string/search"
-    android:imeOptions="actionSearch"
-    android:maxLines="1"/>
+      android:id="@+id/country_code_picker_search"
+      android:layout_width="match_parent"
+      android:layout_height="50dp"
+      android:layout_below="@+id/line1"
+      android:background="@null"
+      android:paddingStart="@dimen/margin_start"
+      android:drawableStart="@drawable/ic_search"
+      android:hint="@string/search"
+      android:imeOptions="actionSearch"
+      android:maxLines="1"
+      />
 
-  <ListView
-    android:id="@+id/country_code_picker_listview"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_marginBottom="10dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_weight="1"></ListView>
-
-</LinearLayout>
+  <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+      android:id="@+id/country_code_picker_listview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@+id/country_code_picker_search"
+      />
+</RelativeLayout>
