@@ -8,7 +8,7 @@
 
 CountryPicker is a simple library that can be show a country picker. See the example to see more detail.
 
-![](https://raw.githubusercontent.com/mukeshsolanki/country-picker-android/master/Screenshot_20160506-152951.png)
+![](https://raw.githubusercontent.com/mukeshsolanki/country-picker-android/master/Screenshot_20171029-223719.png)
 
 ## How to use
 
@@ -31,7 +31,7 @@ Step 2\. Add the dependency
 
 ```java
 dependencies {
-        compile 'com.github.mukeshsolanki:country-picker-android:1.1.9'
+        compile 'com.github.tougee:country-picker-android:1.2.0'
 }
 ```
 
