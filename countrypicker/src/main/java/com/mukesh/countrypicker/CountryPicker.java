@@ -83,7 +83,7 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (listener != null) {
-          Country country = selectedCountriesList.get(position);
+          Country country = selectedCountriesList.get(position - 1);  //header
           listener.onSelectCountry(country.getName(), country.getCode(), country.getDialCode(),
               country.getFlag());
           mSelectedCountry = country;
