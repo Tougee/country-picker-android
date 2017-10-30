@@ -47,7 +47,10 @@ picker.setListener(new CountryPickerListener() {
         // Implement your code here
     }
 });
-picker.show(getSupportFragmentManager(), "COUNTRY_PICKER");
+getSupportFragmentManager().beginTransaction()
+        .replace(R.id.container, picker)
+        .addToBackStack(null)
+        .commit();
 ```
 
 That's it, all done.
