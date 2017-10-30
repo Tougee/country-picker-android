@@ -1,11 +1,14 @@
 package com.mukesh.countrypicker;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +17,21 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class CountryPicker extends Fragment implements View.OnClickListener {
+public class CountryPicker extends Fragment implements View.OnClickListener, Comparator<Country> {
 
   private StickyListHeadersListView countryListView;
   private View closeView;
@@ -28,19 +39,20 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
   private ImageView mSelectedImageView;
 
   private CountryAdapter adapter;
-  private List<Country> countriesList = new ArrayList<>();
-  private List<Country> selectedCountriesList = new ArrayList<>();
+  private List<Country> countriesList;
+  private List<Country> selectedCountriesList;
   private CountryPickerListener listener;
   private Country mSelectedCountry;
   private Country mLocationCountry;
   private View mHeader;
+  private Context context;
 
   public static CountryPicker newInstance() {
     return new CountryPicker();
   }
 
   public CountryPicker() {
-    setCountriesList(Country.getAllCountries());
+    getAllCountries();
   }
 
   @Override
@@ -60,16 +72,18 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
     TextView locationTextView = (TextView) mHeader.findViewById(R.id.location_text);
     mSelectedImageView = (ImageView) mHeader.findViewById(R.id.selected_icon);
     ImageView locationImageView = (ImageView) mHeader.findViewById(R.id.location_icon);
+
     if (mSelectedCountry == null) {
       mSelectedCountry = mLocationCountry;
     }
+
     if (mSelectedCountry != null) {
       mSelectedTextView.setText(mSelectedCountry.getName());
-      mSelectedImageView.setImageResource(mSelectedCountry.getFlag());
+      mSelectedImageView.setImageResource(getFlagResId(mSelectedCountry.getCode()));
     }
     if (mLocationCountry != null) {
       locationTextView.setText(mLocationCountry.getName());
-      locationImageView.setImageResource(mLocationCountry.getFlag());
+      locationImageView.setImageResource(getFlagResId(mLocationCountry.getCode()));
     }
 
     adapter = new CountryAdapter(getActivity(), selectedCountriesList);
@@ -135,6 +149,39 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
     adapter.notifyDataSetChanged();
   }
 
+  @Override public int compare(Country lhs, Country rhs) {
+    return Collator.getInstance(Locale.ENGLISH).compare(lhs.getEnglishName(), rhs.getEnglishName());
+  }
+
+  public void getAllCountries() {
+    if (countriesList == null) {
+      try {
+        countriesList = new ArrayList<>();
+        String allCountriesCode = readEncodedJsonString();
+        JSONArray countryArray = new JSONArray(allCountriesCode);
+        for (int i = 0; i < countryArray.length(); i++) {
+          JSONObject jsonObject = countryArray.getJSONObject(i);
+          String countryDialCode = jsonObject.getString("dial_code");
+          String countryCode = jsonObject.getString("code");
+          Country country = new Country();
+          country.setCode(countryCode);
+          country.setDialCode(countryDialCode);
+          countriesList.add(country);
+        }
+        Collections.sort(countriesList, this);
+        selectedCountriesList = new ArrayList<>();
+        selectedCountriesList.addAll(countriesList);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private static String readEncodedJsonString() throws java.io.IOException {
+    byte[] data = Base64.decode(Constants.ENCODED_COUNTRY_CODE, Base64.DEFAULT);
+    return new String(data, "UTF-8");
+  }
+
   public void setCountriesList(List<Country> newCountries) {
     this.countriesList.clear();
     this.countriesList.addAll(newCountries);
@@ -142,6 +189,69 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
 
   public void setLocationCountry(Country country) {
     mLocationCountry = country;
+  }
+
+  public Country getUserCountryInfo(Context context) {
+    this.context = context;
+    getAllCountries();
+    TelephonyManager telephonyManager =
+            (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+    if (!(telephonyManager.getSimState() == TelephonyManager.SIM_STATE_ABSENT)) {
+      return getCountry(telephonyManager.getSimCountryIso());
+    }
+    return afghanistan();
+  }
+
+  public Country getCountryByLocale( Context context, Locale locale ) {
+    this.context = context;
+    String countryIsoCode = locale.getISO3Country().substring(0,2).toLowerCase();
+    return getCountry(countryIsoCode);
+  }
+
+  public Country getCountryByName ( Context context, String countryName ) {
+    this.context = context;
+    Map<String, String> countries = new HashMap<>();
+    for (String iso : Locale.getISOCountries()) {
+      Locale l = new Locale("", iso);
+      countries.put(l.getDisplayCountry(), iso);
+    }
+
+    String countryIsoCode = countries.get(countryName);
+    if (countryIsoCode != null) {
+      return getCountry(countryIsoCode);
+    }
+    return afghanistan();
+  }
+
+  private Country getCountry( String countryIsoCode ) {
+    getAllCountries();
+    for (int i = 0; i < countriesList.size(); i++) {
+      Country country = countriesList.get(i);
+      if (country.getCode().equalsIgnoreCase(countryIsoCode)) {
+        country.setFlag(getFlagResId(country.getCode()));
+        return country;
+      }
+    }
+    return afghanistan();
+  }
+
+  private Country afghanistan() {
+    Country country = new Country();
+    country.setCode("AF");
+    country.setDialCode("+93");
+    country.setFlag(R.drawable.flag_af);
+    return country;
+  }
+
+  private int getFlagResId(String drawable) {
+    try {
+      return context.getResources()
+              .getIdentifier("flag_" + drawable.toLowerCase(Locale.ENGLISH), "drawable",
+                      context.getPackageName());
+    } catch (Exception e) {
+      e.printStackTrace();
+      return 0;
+    }
   }
 
   @Override public void onClick(View v) {

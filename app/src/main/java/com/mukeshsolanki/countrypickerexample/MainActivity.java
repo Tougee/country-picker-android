@@ -7,12 +7,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mukesh.countrypicker.Country;
 import com.mukesh.countrypicker.CountryPicker;
 import com.mukesh.countrypicker.CountryPickerListener;
-import com.mukesh.countrypicker.Country;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -68,17 +65,16 @@ public class MainActivity extends AppCompatActivity {
     // and decide, in which order they will be displayed
     //Collections.reverse(nc);
     //mCountryPicker.setCountriesList(nc);
-    mCountryPicker.setCountriesList(Country.getAllCountries());
   }
 
   private void show() {
     getSupportFragmentManager().beginTransaction()
-        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+        .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top)
         .add(R.id.root, mCountryPicker).addToBackStack(null).commit();
   }
 
   private void getUserCountryInfo() {
-    Country country = Country.getCountryFromSIM(getApplicationContext());
+    Country country = mCountryPicker.getUserCountryInfo(getApplicationContext());
     if (country != null) {
       mCountryFlagImageView.setImageResource(country.getFlag());
       mCountryDialCodeTextView.setText(country.getDialCode());

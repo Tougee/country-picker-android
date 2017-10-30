@@ -1,6 +1,7 @@
 package com.mukesh.countrypicker
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
+import java.util.*
 
 class CountryAdapter(context: Context, private var countries: List<Country>) : BaseAdapter(), StickyListHeadersAdapter {
   private var inflater: LayoutInflater = LayoutInflater.from(context)
@@ -38,8 +40,10 @@ class CountryAdapter(context: Context, private var countries: List<Country>) : B
       holder = view.tag as ViewHolder
     }
 
+    val drawableName = "flag_" + countries[position].code.toLowerCase(Locale.ENGLISH)
+    val drawableId = getResId(drawableName)
+    holder.icon.setImageResource(drawableId)
     holder.text.text = countries[position].name
-    holder.icon.setImageResource(countries[position].flag)
 
     return view
   }
@@ -56,13 +60,25 @@ class CountryAdapter(context: Context, private var countries: List<Country>) : B
       view = convertView
       holder = view.tag as HeaderViewHolder
     }
-    val headerText = "" + countries[position].code[0]
+    val headerText = "" + countries[position].englishName[0]
     holder.text.text = headerText
     return view
   }
 
   override fun getHeaderId(position: Int): Long {
-    return countries[position].code[0].toLong()
+    return countries[position].englishName[0].toLong()
+  }
+
+  private fun getResId(drawableName: String): Int {
+
+    try {
+      val res = R.drawable::class.java
+      val field = res.getField(drawableName)
+      return field.getInt(null)
+    } catch (e: Exception) {
+      Log.e("CountryCodePicker", "Failure to get drawable id.", e)
+    }
+    return -1
   }
 
   internal inner class HeaderViewHolder {
