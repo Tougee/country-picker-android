@@ -49,7 +49,7 @@ picker.setListener(new CountryPickerListener() {
     }
 });
 getSupportFragmentManager().beginTransaction()
-        .replace(R.id.container, picker)
+        .add(R.id.container, picker)
         .addToBackStack(null)
         .commit();
 ```

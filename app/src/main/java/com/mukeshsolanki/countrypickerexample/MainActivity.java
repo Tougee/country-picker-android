@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
   private void show() {
     getSupportFragmentManager().beginTransaction()
         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-        .replace(R.id.root, mCountryPicker).addToBackStack(null).commit();
+        .add(R.id.root, mCountryPicker).addToBackStack(null).commit();
   }
 
   private void getUserCountryInfo() {
