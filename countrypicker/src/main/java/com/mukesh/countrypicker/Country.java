@@ -383,7 +383,15 @@ public class Country {
     if (telephonyManager.getSimState() != TelephonyManager.SIM_STATE_ABSENT) {
       return Country.getCountryByISO(telephonyManager.getSimCountryIso());
     }
-    return null;
+    return afghanistan();
+  }
+
+  private static Country afghanistan() {
+    Country country = new Country();
+    country.setCode("AF");
+    country.setDialCode("+93");
+    country.setFlag(R.drawable.flag_af);
+    return country;
   }
 
     /*
