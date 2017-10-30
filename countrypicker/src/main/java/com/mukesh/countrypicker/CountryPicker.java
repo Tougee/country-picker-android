@@ -118,9 +118,13 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
   @SuppressLint("DefaultLocale")
   private void search(String text) {
     if (!TextUtils.isEmpty(text)) {
-      countryListView.removeHeaderView(mHeader);
+      if (countryListView.getHeaderViewsCount() != 0) {
+        countryListView.removeHeaderView(mHeader);
+      }
     } else {
-      countryListView.addHeaderView(mHeader);
+      if (countryListView.getHeaderViewsCount() == 0) {
+        countryListView.addHeaderView(mHeader);
+      }
     }
     selectedCountriesList.clear();
     for (Country country : countriesList) {
