@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
   private void show() {
     getSupportFragmentManager().beginTransaction()
-        .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top)
+        .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, 0, R.anim.slide_out_bottom)
         .add(R.id.root, mCountryPicker).addToBackStack(null).commit();
   }
 

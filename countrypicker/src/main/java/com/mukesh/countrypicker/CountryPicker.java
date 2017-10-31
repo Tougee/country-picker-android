@@ -20,10 +20,7 @@ import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -31,7 +28,7 @@ import java.util.Map;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class CountryPicker extends Fragment implements View.OnClickListener, Comparator<Country> {
+public class CountryPicker extends Fragment implements View.OnClickListener {
 
   private StickyListHeadersListView countryListView;
   private View closeView;
@@ -52,12 +49,13 @@ public class CountryPicker extends Fragment implements View.OnClickListener, Com
   }
 
   public CountryPicker() {
-    getAllCountries();
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
+    context = container.getContext();
+    getAllCountries();
     View view = inflater.inflate(R.layout.country_picker, container, false);
     EditText searchEditText = (EditText) view.findViewById(R.id.country_code_picker_search);
     countryListView = (StickyListHeadersListView) view.findViewById(R.id.country_code_picker_listview);
@@ -79,11 +77,11 @@ public class CountryPicker extends Fragment implements View.OnClickListener, Com
 
     if (mSelectedCountry != null) {
       mSelectedTextView.setText(mSelectedCountry.getName());
-      mSelectedImageView.setImageResource(getFlagResId(mSelectedCountry.getCode()));
+      mSelectedImageView.setImageResource(mSelectedCountry.getFlag());
     }
     if (mLocationCountry != null) {
       locationTextView.setText(mLocationCountry.getName());
-      locationImageView.setImageResource(getFlagResId(mLocationCountry.getCode()));
+      locationImageView.setImageResource(mLocationCountry.getFlag());
     }
 
     adapter = new CountryAdapter(getActivity(), selectedCountriesList);
@@ -149,10 +147,6 @@ public class CountryPicker extends Fragment implements View.OnClickListener, Com
     adapter.notifyDataSetChanged();
   }
 
-  @Override public int compare(Country lhs, Country rhs) {
-    return Collator.getInstance(Locale.ENGLISH).compare(lhs.getEnglishName(), rhs.getEnglishName());
-  }
-
   public void getAllCountries() {
     if (countriesList == null) {
       try {
@@ -166,9 +160,9 @@ public class CountryPicker extends Fragment implements View.OnClickListener, Com
           Country country = new Country();
           country.setCode(countryCode);
           country.setDialCode(countryDialCode);
+          country.setFlag(getFlagResId(countryCode));
           countriesList.add(country);
         }
-        Collections.sort(countriesList, this);
         selectedCountriesList = new ArrayList<>();
         selectedCountriesList.addAll(countriesList);
       } catch (Exception e) {

@@ -13,6 +13,7 @@ public class Country {
   private String code;
   private String name;
   private String dialCode;
+  // sorted by English name
   private String englishName;
   private int flag;
 
@@ -34,7 +35,6 @@ public class Country {
       name = new Locale("", code).getDisplayName();
       englishName = new Locale("en", code).getDisplayName(Locale.ENGLISH);
       englishName = englishName.substring(englishName.indexOf('(') + 1);
-      Log.d("@@@", "englishName: " + englishName + ", name:" + name + ", code:" + getCode());
     }
   }
 
