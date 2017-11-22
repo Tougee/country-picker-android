@@ -14,17 +14,11 @@ import java.util.*
 class CountryAdapter(context: Context, private var countries: List<Country>) : BaseAdapter(), StickyListHeadersAdapter {
   private var inflater: LayoutInflater = LayoutInflater.from(context)
 
-  override fun getCount(): Int {
-    return countries.size
-  }
+  override fun getCount(): Int = countries.size
 
-  override fun getItem(position: Int): Any {
-    return countries[position]
-  }
+  override fun getItem(position: Int): Any = countries[position]
 
-  override fun getItemId(position: Int): Long {
-    return position.toLong()
-  }
+  override fun getItemId(position: Int): Long = position.toLong()
 
   override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
     val holder: ViewHolder
@@ -65,9 +59,7 @@ class CountryAdapter(context: Context, private var countries: List<Country>) : B
     return view
   }
 
-  override fun getHeaderId(position: Int): Long {
-    return countries[position].englishName[0].toLong()
-  }
+  override fun getHeaderId(position: Int): Long = countries[position].englishName[0].toLong()
 
   private fun getResId(drawableName: String): Int {
 

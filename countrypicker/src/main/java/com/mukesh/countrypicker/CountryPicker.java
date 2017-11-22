@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -43,6 +44,7 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
   private Country mLocationCountry;
   private View mHeader;
   private Context context;
+  private EditText mSearchEditText;
 
   public static CountryPicker newInstance() {
     return new CountryPicker();
@@ -57,7 +59,7 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
     context = container.getContext();
     getAllCountries();
     View view = inflater.inflate(R.layout.country_picker, container, false);
-    EditText searchEditText = (EditText) view.findViewById(R.id.country_code_picker_search);
+    mSearchEditText = (EditText) view.findViewById(R.id.country_code_picker_search);
     countryListView = (StickyListHeadersListView) view.findViewById(R.id.country_code_picker_listview);
     closeView = view.findViewById(R.id.close);
     closeView.setOnClickListener(this);
@@ -93,18 +95,22 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (listener != null) {
-          Country country = selectedCountriesList.get(
-                  countryListView.getHeaderViewsCount() == 0 ? position : position - 1);
-          listener.onSelectCountry(country.getName(), country.getCode(), country.getDialCode(),
-              country.getFlag());
+          if (countryListView.getHeaderViewsCount() != 0 && position == 0) {
+            return;
+          }
+          Country country = selectedCountriesList.get(countryListView.getHeaderViewsCount() == 0
+                   ? position : position - 1);
           mSelectedCountry = country;
           mSelectedTextView.setText(country.getName());
           mSelectedImageView.setImageResource(country.getFlag());
+          reset();
+          listener.onSelectCountry(country.getName(), country.getCode(), country.getDialCode(),
+                  country.getFlag());
         }
       }
     });
 
-    searchEditText.addTextChangedListener(new TextWatcher() {
+    mSearchEditText.addTextChangedListener(new TextWatcher() {
 
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -250,7 +256,16 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
 
   @Override public void onClick(View v) {
     if (v == closeView) {
+      reset();
       getActivity().getSupportFragmentManager().popBackStackImmediate();
+    }
+  }
+
+  private void reset() {
+    mSearchEditText.setText("");
+    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+    if (imm != null) {
+      imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
     }
   }
 }
