@@ -199,7 +199,9 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
     if (!(telephonyManager.getSimState() == TelephonyManager.SIM_STATE_ABSENT)) {
       return getCountry(telephonyManager.getSimCountryIso());
     }
-    return afghanistan();
+
+    Country c = getCountry(Locale.getDefault().getCountry());
+    return c != null ? c : afghanistan();
   }
 
   public Country getCountryByLocale( Context context, Locale locale ) {
