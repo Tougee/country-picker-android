@@ -32,7 +32,7 @@ Step 2\. Add the dependency
 
 ```java
 dependencies {
-        compile 'com.github.tougee:country-picker-android:1.0.6'
+        compile 'com.github.tougee:country-picker-android:1.0.7'
 }
 ```
 
