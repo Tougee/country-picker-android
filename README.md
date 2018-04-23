@@ -8,8 +8,7 @@
 
 CountryPicker is a simple library that can be show a country picker. See the example to see more detail.
 
-![](https://raw.githubusercontent.com/Tougee/country-picker-android/master/Screenshot_1.jpg)
-![](https://raw.githubusercontent.com/Tougee/country-picker-android/master/Screenshot_2.jpg)
+<img src="https://raw.githubusercontent.com/Tougee/country-picker-android/master/Screenshot_1.jpg" width="30%" height="30%">       <img src="https://raw.githubusercontent.com/Tougee/country-picker-android/master/Screenshot_2.jpg" width="30%" height="30%">
 
 ## How to use
 
@@ -32,7 +31,7 @@ Step 2\. Add the dependency
 
 ```java
 dependencies {
-        compile 'com.github.tougee:country-picker-android:1.0.7'
+        compile 'com.github.tougee:country-picker-android:1.0.8'
 }
 ```
 
