@@ -1,0 +1,5 @@
+<resources>
+    <string name="search">搜索&#8230;</string>
+    <string name="no_sim_detected">未检测到sim卡。</string>
+    <string name="title">选择一个国家</string>
+</resources>

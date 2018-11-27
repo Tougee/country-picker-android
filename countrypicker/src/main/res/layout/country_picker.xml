@@ -25,7 +25,7 @@
       android:layout_centerHorizontal="true"
       android:gravity="center"
       android:padding="8dp"
-      android:text="Select a Country"
+      android:text="@string/title"
       android:textColor="@android:color/black"
       android:textSize="18sp"
       />
