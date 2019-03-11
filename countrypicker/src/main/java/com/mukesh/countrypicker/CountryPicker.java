@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -54,13 +55,13 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
   }
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+  public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
     context = container.getContext();
     getAllCountries();
     View view = inflater.inflate(R.layout.country_picker, container, false);
-    mSearchEditText = (EditText) view.findViewById(R.id.country_code_picker_search);
-    countryListView = (StickyListHeadersListView) view.findViewById(R.id.country_code_picker_listview);
+    mSearchEditText = view.findViewById(R.id.country_code_picker_search);
+    countryListView = view.findViewById(R.id.country_code_picker_listview);
     closeView = view.findViewById(R.id.close);
     closeView.setOnClickListener(this);
 
@@ -68,10 +69,10 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
     selectedCountriesList.addAll(countriesList);
 
     mHeader = inflater.inflate(R.layout.list_header, null, false);
-    mSelectedTextView = (TextView) mHeader.findViewById(R.id.selected_text);
-    TextView locationTextView = (TextView) mHeader.findViewById(R.id.location_text);
-    mSelectedImageView = (ImageView) mHeader.findViewById(R.id.selected_icon);
-    ImageView locationImageView = (ImageView) mHeader.findViewById(R.id.location_icon);
+    mSelectedTextView = mHeader.findViewById(R.id.selected_text);
+    TextView locationTextView = mHeader.findViewById(R.id.location_text);
+    mSelectedImageView = mHeader.findViewById(R.id.selected_icon);
+    ImageView locationImageView = mHeader.findViewById(R.id.location_icon);
 
     if (mSelectedCountry == null) {
       mSelectedCountry = mLocationCountry;
@@ -86,7 +87,7 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
       locationImageView.setImageResource(mLocationCountry.getFlag());
     }
 
-    adapter = new CountryAdapter(getActivity(), selectedCountriesList);
+    adapter = new CountryAdapter(requireActivity(), selectedCountriesList);
     countryListView.addHeaderView(mHeader);
     countryListView.setAdapter(adapter);
     countryListView.setAreHeadersSticky(true);
@@ -259,13 +260,13 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
   @Override public void onClick(View v) {
     if (v == closeView) {
       reset();
-      getActivity().getSupportFragmentManager().popBackStackImmediate();
+      requireFragmentManager().popBackStackImmediate();
     }
   }
 
   private void reset() {
     mSearchEditText.setText("");
-    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+    InputMethodManager imm = (InputMethodManager)requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
     if (imm != null) {
       imm.hideSoftInputFromWindow(mSearchEditText.getWindowToken(), 0);
     }
