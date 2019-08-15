@@ -31,7 +31,7 @@ Step 2\. Add the dependency
 
 ```java
 dependencies {
-        compile 'com.github.tougee:country-picker-android:1.0.10'
+        compile 'com.github.tougee:country-picker-android:1.0.11'
 }
 ```
 

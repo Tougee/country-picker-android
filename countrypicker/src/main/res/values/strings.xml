@@ -1,6 +1,6 @@
 <resources>
-  <string name="app_name">Country Picker</string>
+  <string name="app_name" translatable="false">Country Picker</string>
   <string name="search">Search&#8230;</string>
   <string name="no_sim_detected">No sim card detected.</string>
-  <string name="title">Select a Country</string>
+  <string name="title">Choose a Country or Region</string>
 </resources>
