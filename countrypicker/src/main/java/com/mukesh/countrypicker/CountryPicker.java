@@ -1,5 +1,9 @@
 package com.mukesh.countrypicker;
 
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
@@ -18,10 +22,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +36,8 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
   private View closeView;
   private TextView mSelectedTextView;
   private ImageView mSelectedImageView;
+  private View mSelectedView;
+  private View mLocationView;
 
   private CountryAdapter adapter;
   private List<Country> countriesList;
@@ -69,6 +71,8 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
     selectedCountriesList.addAll(countriesList);
 
     mHeader = inflater.inflate(R.layout.list_header, null, false);
+    mSelectedView = mHeader.findViewById(R.id.selected_ll);
+    mLocationView = mHeader.findViewById(R.id.location_ll);
     mSelectedTextView = mHeader.findViewById(R.id.selected_text);
     TextView locationTextView = mHeader.findViewById(R.id.location_text);
     mSelectedImageView = mHeader.findViewById(R.id.selected_icon);
@@ -81,10 +85,24 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
     if (mSelectedCountry != null) {
       mSelectedTextView.setText(mSelectedCountry.getName());
       mSelectedImageView.setImageResource(mSelectedCountry.getFlag());
+      mSelectedView.setOnClickListener(new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+          refreshCountryInfo(mSelectedCountry);
+        }
+      });
     }
     if (mLocationCountry != null) {
       locationTextView.setText(mLocationCountry.getName());
       locationImageView.setImageResource(mLocationCountry.getFlag());
+      mLocationView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          mSelectedCountry = mLocationCountry;
+          refreshCountryInfo(mSelectedCountry);
+        }
+      });
     }
 
     adapter = new CountryAdapter(requireActivity(), selectedCountriesList);
@@ -102,11 +120,7 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
           Country country = selectedCountriesList.get(countryListView.getHeaderViewsCount() == 0
                    ? position : position - 1);
           mSelectedCountry = country;
-          mSelectedTextView.setText(country.getName());
-          mSelectedImageView.setImageResource(country.getFlag());
-          reset();
-          listener.onSelectCountry(country.getName(), country.getCode(), country.getDialCode(),
-                  country.getFlag());
+          refreshCountryInfo(country);
         }
       }
     });
@@ -128,6 +142,14 @@ public class CountryPicker extends Fragment implements View.OnClickListener {
     });
 
     return view;
+  }
+
+  private void refreshCountryInfo(Country country) {
+    mSelectedTextView.setText(country.getName());
+    mSelectedImageView.setImageResource(country.getFlag());
+    reset();
+    listener.onSelectCountry(country.getName(), country.getCode(), country.getDialCode(),
+            country.getFlag());
   }
 
   public void setListener(CountryPickerListener listener) {
