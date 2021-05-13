@@ -23,7 +23,7 @@ android {
 dependencies {
   implementation fileTree(dir: 'libs', include: ['*.jar'])
   implementation 'com.android.support:support-v4:28.0.0'
-  implementation 'com.github.mtotschnig:StickyListHeaders:2.7.1'
+  implementation 'com.github.mtotschnig:StickyListHeaders:2.7.2'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 repositories {
