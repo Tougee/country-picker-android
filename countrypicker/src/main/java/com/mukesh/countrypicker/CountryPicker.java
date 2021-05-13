@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextUtils;
